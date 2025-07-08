@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "//rasheedbshaik.github.io/Tic-Tac-Toe/static/css/main.b4142a25.css",
+    "main.js": "//rasheedbshaik.github.io/Tic-Tac-Toe/static/js/main.98c2947c.js",
+    "index.html": "//rasheedbshaik.github.io/Tic-Tac-Toe/index.html",
+    "main.b4142a25.css.map": "//rasheedbshaik.github.io/Tic-Tac-Toe/static/css/main.b4142a25.css.map",
+    "main.98c2947c.js.map": "//rasheedbshaik.github.io/Tic-Tac-Toe/static/js/main.98c2947c.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b4142a25.css",
+    "static/js/main.98c2947c.js"
+  ]
+}
