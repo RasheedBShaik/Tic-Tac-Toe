@@ -1,0 +1,106 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0px;
+  color: #f0f8ff;
+}
+.start {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+  text-align: center;
+}
+
+.bigBox {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 85%;
+  aspect-ratio: 1 / 1;
+  background-color: #111;
+  padding: 15px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px #00f2fe, 0 0 40px #4facfe;
+}
+
+.box {
+  background-color: #6a00ff;
+  color: #fff;
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: bold;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  transition: all 0.25s ease;
+  user-select: none;
+  box-shadow: 0 0 10px #a100ff, 0 0 20px #a100ff inset;
+}
+
+.box:hover {
+  background-color: #8e2de2;
+  transform: scale(1.05);
+  cursor: pointer;
+  box-shadow: 0 0 15px #d500f9, 0 0 25px #d500f9 inset;
+}
+
+.box.filled {
+  background-color: #4a148c;
+  cursor: default;
+  transform: none;
+  box-shadow: 0 0 10px #7b1fa2, 0 0 20px #7b1fa2 inset;
+}
+
+.winner {
+  margin-top: 20px;
+  font-size: 2rem;
+  font-weight: 500;
+  text-align: center;
+  background: rgba(0, 255, 255, 0.1);
+  padding: 10px 20px;
+  border-radius: 12px;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+}
+
+button {
+  margin-top: 20px;
+  font-size: 1.2rem;
+  padding: 12px 25px;
+  background-color: #00e5ff;
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff;
+}
+
+button:hover {
+  background-color: #18ffff;
+  box-shadow: 0 0 15px #18ffff, 0 0 30px #18ffff;
+}
+
+/* Responsive tweaks */
+@media (max-width: 500px) {
+  .start {
+    font-size: 2rem;
+  }
+  .winner {
+    font-size: 1.5rem;
+  }
+}
