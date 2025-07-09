@@ -94,6 +94,10 @@ button:hover {
   background-color: #18ffff;
   box-shadow: 0 0 15px #18ffff, 0 0 30px #18ffff;
 }
+.me:hover {
+  transition: transform 0.3s ease;
+  transform: scale(1.2);
+}
 
 /* Responsive tweaks */
 @media (max-width: 500px) {

@@ -1,12 +1,23 @@
-// Gameplay.jsx
 import React, { useState } from "react";
 import "./App.css";
 
-const Gameplay = () => {
+const Gameplay = ({
+  board: externalBoard,
+  onCellClick,
+  currentPlayer: externalPlayer,
+  winner: externalWinner,
+  isOnline = false,
+  onReset,
+}) => {
+  // Local state for offline gameplay
   const [board, setBoard] = useState(Array(9).fill(""));
   const [currentPlayer, setCurrentPlayer] = useState("X");
   const [moveOrder, setMoveOrder] = useState([]);
   const [winner, setWinner] = useState(null);
+
+  // Choose correct state based on mode
+  const boardToUse = isOnline ? externalBoard : board;
+  const winnerToUse = isOnline ? externalWinner : winner;
 
   const winningCombos = [
     [0, 1, 2],
@@ -19,68 +30,77 @@ const Gameplay = () => {
     [2, 4, 6],
   ];
 
-  const checkWinner = (board) => {
-    for (let [a, b, c] of winningCombos) {
-      if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-        return board[a];
+  const checkWinner = (b) => {
+    for (let [a, b1, c] of winningCombos) {
+      if (b[a] && b[a] === b[b1] && b[a] === b[c]) {
+        return b[a];
       }
     }
-    return null;
+    return b.includes("") ? null : "Draw";
   };
 
   const handleClick = (index) => {
-    if (board[index] || winner) return;
+    if (board[index] || winnerToUse) return;
 
     const newBoard = [...board];
-    newBoard[index] = currentPlayer;
-
     const newMoveOrder = [...moveOrder, index];
+
+    // Remove oldest if more than 6 moves
     if (newMoveOrder.length > 6) {
       const oldest = newMoveOrder.shift();
       newBoard[oldest] = "";
     }
 
+    newBoard[index] = currentPlayer;
+
+    const result = checkWinner(newBoard);
     setBoard(newBoard);
     setMoveOrder(newMoveOrder);
 
-    const gameWinner = checkWinner(newBoard);
-    if (gameWinner) {
-      setWinner(gameWinner);
+    if (result) {
+      setWinner(result);
     } else {
       setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
     }
   };
 
   const resetGame = () => {
-    setBoard(Array(9).fill(""));
-    setMoveOrder([]);
-    setCurrentPlayer("X");
-    setWinner(null);
+    if (isOnline && onReset) {
+      onReset();
+    } else {
+      setBoard(Array(9).fill(""));
+      setMoveOrder([]);
+      setCurrentPlayer("X");
+      setWinner(null);
+    }
   };
 
   return (
     <>
       <div className="start">Let's Start the Game</div>
 
-      {winner && (
-        <div
-          style={{
-            marginTop: 10,
-            marginBottom: 15,
-            fontSize: 24,
-            textAlign: "center",
-          }}>
-          Player <strong>{winner}</strong> wins!
+      {winnerToUse && (
+        <div style={{ margin: "10px 0", fontSize: 24, textAlign: "center" }}>
+          {winnerToUse === "Draw" ? (
+            <>
+              Game is a <strong>Draw</strong>
+            </>
+          ) : (
+            <>
+              Player <strong>{winnerToUse}</strong> wins!
+            </>
+          )}
         </div>
       )}
+
       <div className="bigBox">
-        {board.map((value, index) => (
+        {boardToUse.map((value, index) => (
           <div
             key={index}
             className="box"
-            onClick={() => handleClick(index)}
+            onClick={() => (isOnline ? onCellClick(index) : handleClick(index))}
             style={{
-              cursor: value === "" && !winner ? "pointer" : "default",
+              cursor: value === "" && !winnerToUse ? "pointer" : "default",
             }}>
             {value}
           </div>

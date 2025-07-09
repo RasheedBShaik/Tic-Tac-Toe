@@ -7,29 +7,54 @@ const Select = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      {/* <h2 style={{ textAlign: "center" }}>Select Game Mode</h2> */}
-
-      {/* ✅ Show buttons only before a selection */}
+      {/* ✅ Show title only before a selection */}
       {visibleComponent === null && (
-        <div
-          style={{
-            display: "flex",
-            paddingTop: "50px",
-            justifyContent: "space-around",
-          }}>
-          <button
-            onClick={() => setVisibleComponent("online")}
-            style={{ marginLeft: "10px" }}>
-            Online
-          </button>
-          <button
-            onClick={() => setVisibleComponent("offline")}
-            style={{ marginLeft: "10px" }}>
-            Offline
-          </button>
-        </div>
+        <>
+          <h1 style={{ textAlign: "center", color: "#00ffff" }}>Select Mode</h1>
+
+          <div
+            style={{
+              display: "flex",
+              paddingTop: "50px",
+              justifyContent: "space-around",
+            }}>
+            <button
+              onClick={() => setVisibleComponent("online")}
+              style={{ marginLeft: "10px" }}>
+              Online
+            </button>
+            <button
+              onClick={() => setVisibleComponent("offline")}
+              style={{ marginLeft: "10px" }}>
+              Offline
+            </button>
+          </div>
+
+          {/* ✅ Footer only shown during selection */}
+          <pre
+            className="me"
+            style={{
+              textAlign: "center",
+              color: "red",
+              fontWeight: "500",
+              borderRadius: "10px",
+              backgroundColor: "lightgray",
+              marginTop: "50px",
+              padding: "10px",
+              paddingLeft: "30px",
+              paddingRight: "30px",
+              fontSize: "20px",
+              display: "flex",
+              alignItems: "center",
+              boxShadow: "0px 0px 5px 8px #ff00ff",
+            }}>
+            Made By Rasheed with{" "}
+            <div style={{ fontSize: "30px", fontWeight: "600" }}>♡ </div>
+          </pre>
+        </>
       )}
 
+      {/* ✅ Show selected game component */}
       <div style={{ marginTop: "20px" }}>
         {visibleComponent === "online" && <Online />}
         {visibleComponent === "offline" && <Offline />}

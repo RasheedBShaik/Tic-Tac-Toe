@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { db } from "./firebase";
 import { doc, setDoc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
+import Gameplay from "./Gameplay";
+import Offline from "./Offline";
 
 const Online = () => {
   const [roomId, setRoomId] = useState("");
@@ -8,6 +10,7 @@ const Online = () => {
   const [player, setPlayer] = useState("");
   const [gameData, setGameData] = useState(null);
   const [winner, setWinner] = useState(null);
+  const [showOffline, setShowOffline] = useState(false);
 
   const emptyBoard = Array(9).fill("");
 
@@ -31,43 +34,34 @@ const Online = () => {
   };
 
   const createRoom = async () => {
-    const newRoomId = Math.random().toString(36).slice(2, 8); // e.g., "xk3p9b"
+    const newRoomId = Math.random().toString(36).slice(2, 8);
     const ref = doc(db, "rooms", newRoomId);
     const initialData = {
       board: Array(9).fill(""),
       currentPlayer: "X",
+      moveOrder: [],
     };
-
     try {
       await setDoc(ref, initialData);
-      console.log("Room created successfully with ID:", newRoomId);
       setPlayer("X");
       setRoomId(newRoomId);
     } catch (error) {
-      console.error("🔥 Failed to create room:", error);
-      alert("Could not create room. See console for details.");
+      alert("Could not create room.");
     }
   };
 
   const joinRoom = async () => {
-    if (!inputRoomId.trim()) {
-      alert("Please enter a valid Room ID.");
-      return;
-    }
-
     const ref = doc(db, "rooms", inputRoomId);
     try {
       const snapshot = await getDoc(ref);
       if (snapshot.exists()) {
         setPlayer("O");
         setRoomId(inputRoomId);
-        console.log("Joined room:", inputRoomId);
       } else {
-        alert("Room not found!");
+        alert("Room not found");
       }
-    } catch (error) {
-      console.error("Error joining room:", error);
-      alert("Failed to join room. Check console for details.");
+    } catch (err) {
+      alert("Error joining room.");
     }
   };
 
@@ -80,8 +74,20 @@ const Online = () => {
     )
       return;
 
+    // Deep copy of the board and moveOrder
     const updatedBoard = [...gameData.board];
+    const updatedMoveOrder = [...(gameData.moveOrder || [])];
+
+    // ✅ Remove oldest move if 6 already placed
+    // each player can keep only maximum 3 moves on board
+    if (updatedMoveOrder.length >= 6) {
+      const oldestIndex = updatedMoveOrder.shift(); // remove first
+      updatedBoard[oldestIndex] = ""; // clear cell
+    }
+
+    // ✅ Apply new move
     updatedBoard[index] = player;
+    updatedMoveOrder.push(index);
 
     const result = checkWinner(updatedBoard);
 
@@ -89,11 +95,12 @@ const Online = () => {
       await updateDoc(doc(db, "rooms", roomId), {
         board: updatedBoard,
         currentPlayer: player === "X" ? "O" : "X",
+        moveOrder: updatedMoveOrder, // 🔁 updated array without old move
       });
 
       if (result) setWinner(result);
-    } catch (error) {
-      console.error("Error making move:", error);
+    } catch (err) {
+      console.error("Error making move:", err);
     }
   };
 
@@ -105,99 +112,74 @@ const Online = () => {
       if (data) {
         setGameData(data);
         const possibleWinner = checkWinner(data.board);
-        if (possibleWinner !== winner) {
-          setWinner(possibleWinner);
-        }
+        if (possibleWinner !== winner) setWinner(possibleWinner);
       }
     });
 
     return () => unsub();
-  }, [roomId, winner]); // Remove 'winner' from dependency list to avoid warning
+  }, [roomId, winner]);
 
   const resetGame = async () => {
     try {
       await updateDoc(doc(db, "rooms", roomId), {
         board: emptyBoard,
         currentPlayer: "X",
+        moveOrder: [],
       });
       setWinner(null);
-    } catch (error) {
-      console.error("Error resetting game:", error);
+    } catch (err) {
+      console.error("Error resetting game");
     }
   };
 
-  return (
-    <div style={{ textAlign: "center", fontFamily: "sans-serif" }}>
-      <h1>Online Multiplayer Tic Tac Toe</h1>
+  if (showOffline) return <Offline />;
 
+  return (
+    <div style={{ textAlign: "center" }}>
+      <h1>Create / Join room</h1>
+      <br />
       {!roomId ? (
-        <div>
+        <>
           <button onClick={createRoom}>Create Room</button>
-          <div style={{ margin: "10px 0" }}>
-            <input
-              placeholder="Enter Room ID"
-              value={inputRoomId}
-              onChange={(e) => setInputRoomId(e.target.value)}
-            />
-          </div>
+          <br />
+          <input
+            style={{
+              margin: "25px",
+              fontSize: "20px",
+              height: "40px",
+              borderRadius: "10px",
+              textAlign: "center",
+            }}
+            value={inputRoomId}
+            onChange={(e) => setInputRoomId(e.target.value)}
+            placeholder="Enter Room ID"
+          />
+
+          <br />
           <button onClick={joinRoom}>Join Room</button>
-        </div>
+        </>
       ) : (
         <>
-          <h3>Room ID: {roomId}</h3>
+          <p>Room ID: {roomId}</p>
           <p>You are Player: {player}</p>
 
           {gameData && (
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 100px)",
-                gap: "5px",
-                margin: "20px auto",
-                width: "fit-content",
-              }}>
-              {gameData.board.map((cell, i) => (
-                <div
-                  key={i}
-                  onClick={() => makeMove(i)}
-                  style={{
-                    width: 100,
-                    height: 100,
-                    border: "2px solid #333",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    fontSize: 28,
-                    fontWeight: "bold",
-                    background: cell ? "#ddd" : "#fff",
-                    cursor:
-                      cell === "" &&
-                      gameData.currentPlayer === player &&
-                      !winner
-                        ? "pointer"
-                        : "default",
-                  }}>
-                  {cell}
-                </div>
-              ))}
-            </div>
-          )}
-
-          <p style={{ fontSize: "18px", marginTop: "10px" }}>
-            {winner
-              ? winner === "Draw"
-                ? "It's a Draw!"
-                : `🏆 Winner: ${winner}`
-              : `Current Turn: ${gameData?.currentPlayer}`}
-          </p>
-
-          {winner && (
-            <button onClick={resetGame} style={{ marginTop: "10px" }}>
-              Play Again
-            </button>
+            <Gameplay
+              board={gameData.board}
+              onCellClick={makeMove}
+              currentPlayer={gameData.currentPlayer}
+              winner={winner}
+              isOnline={true}
+              onReset={resetGame}
+            />
           )}
         </>
       )}
+      <br />
+      <br />
+      <button onClick={() => setShowOffline(true)} style={{ marginTop: 20 }}>
+        Go Offline
+      </button>
     </div>
   );
 };
