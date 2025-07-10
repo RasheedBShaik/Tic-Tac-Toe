@@ -90,9 +90,10 @@ const Gameplay = ({
       {/* Score Display */}
       {!isOnline && (
         <div style={{ textAlign: "center", marginBottom: 10 }}>
-          <div style={{ fontSize: 20, margin: 30 }}>
-            Player X Score: <strong>{score.X}</strong> | Player O Score:{" "}
-            <strong>{score.O}</strong>
+          <div style={{ fontSize: 20, margin: 5 }}>
+            Player X Score: <strong>{score.X}</strong> <br />
+            <br />
+            Player O Score: <strong>{score.O}</strong>
           </div>
           <button
             onClick={resetScores}

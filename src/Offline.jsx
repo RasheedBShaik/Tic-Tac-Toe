@@ -14,21 +14,23 @@ function Offline() {
     <div>
       <div
         style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-around",
+          textAlign: "center",
         }}>
-        <h2>Wanna Go Online</h2>
-        <button
-          style={{
-            marginTop: "0px",
-            backgroundColor: "transparent",
-            color: "white",
-          }}
-          onClick={() => setShowOnline(true)}>
-          Go Online
-        </button>
+        <div>
+          <h2>Wanna Go Online</h2>
+          <br />
+          <button
+            style={{
+              marginTop: "0px",
+              backgroundColor: "transparent",
+              color: "white",
+            }}
+            onClick={() => setShowOnline(true)}>
+            Go Online
+          </button>
+        </div>
       </div>
+
       <br />
       <br />
       <br />
