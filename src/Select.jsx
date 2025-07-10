@@ -7,6 +7,7 @@ const Select = () => {
 
   return (
     <div style={{ padding: "20px" }}>
+      <title> Tic Tac Toe </title>
       {/* ✅ Show title only before a selection */}
       {visibleComponent === null && (
         <>
@@ -38,7 +39,7 @@ const Select = () => {
               color: "red",
               fontWeight: "500",
               borderRadius: "10px",
-              backgroundColor: "lightgray",
+              backgroundColor: "lightyellow",
               marginTop: "50px",
               padding: "10px",
               paddingLeft: "30px",
@@ -48,8 +49,8 @@ const Select = () => {
               alignItems: "center",
               boxShadow: "0px 0px 5px 8px #ff00ff",
             }}>
-            Made By Rasheed with{" "}
-            <div style={{ fontSize: "30px", fontWeight: "600" }}>♡ </div>
+            Made By Rasheed with
+            <div style={{ fontSize: "30px", fontWeight: "600" }}> ♡ </div>
           </pre>
         </>
       )}

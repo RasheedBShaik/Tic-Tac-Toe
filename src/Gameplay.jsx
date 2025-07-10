@@ -14,6 +14,7 @@ const Gameplay = ({
   const [currentPlayer, setCurrentPlayer] = useState("X");
   const [moveOrder, setMoveOrder] = useState([]);
   const [winner, setWinner] = useState(null);
+  const [score, setScore] = useState({ X: 0, O: 0 });
 
   // Choose correct state based on mode
   const boardToUse = isOnline ? externalBoard : board;
@@ -59,6 +60,9 @@ const Gameplay = ({
 
     if (result) {
       setWinner(result);
+      if (result === "X" || result === "O") {
+        setScore((prev) => ({ ...prev, [result]: prev[result] + 1 }));
+      }
     } else {
       setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
     }
@@ -75,12 +79,38 @@ const Gameplay = ({
     }
   };
 
+  const resetScores = () => {
+    setScore({ X: 0, O: 0 });
+  };
+
   return (
     <>
       <div className="start">Let's Start the Game</div>
 
+      {/* Score Display */}
+      {!isOnline && (
+        <div style={{ textAlign: "center", marginBottom: 10 }}>
+          <div style={{ fontSize: 20, margin: 30 }}>
+            Player X Score: <strong>{score.X}</strong> | Player O Score:{" "}
+            <strong>{score.O}</strong>
+          </div>
+          <button
+            onClick={resetScores}
+            style={{
+              fontSize: 16,
+              color: "white",
+              backgroundColor: "transparent",
+              marginTop: 30,
+              marginBottom: 30,
+            }}>
+            Reset Scores
+          </button>
+        </div>
+      )}
+
+      {/* Winner Message */}
       {winnerToUse && (
-        <div style={{ margin: "10px 0", fontSize: 24, textAlign: "center" }}>
+        <div style={{ margin: "30px", fontSize: 24, textAlign: "center" }}>
           {winnerToUse === "Draw" ? (
             <>
               Game is a <strong>Draw</strong>
@@ -93,6 +123,7 @@ const Gameplay = ({
         </div>
       )}
 
+      {/* Game Board */}
       <div className="bigBox">
         {boardToUse.map((value, index) => (
           <div
@@ -107,6 +138,7 @@ const Gameplay = ({
         ))}
       </div>
 
+      {/* Reset Game Button */}
       <div style={{ marginTop: 15 }}>
         <button
           onClick={resetGame}
