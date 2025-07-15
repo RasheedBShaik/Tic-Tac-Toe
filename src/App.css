@@ -24,6 +24,7 @@ body {
 }
 
 .bigBox {
+  margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
